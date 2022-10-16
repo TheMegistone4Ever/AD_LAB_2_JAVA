@@ -12,13 +12,12 @@ public class ChessBoard {
     JButton[][] cells;
 
     ChessBoard(int size) throws IOException {
-        this.size = size;
-        cellPx = (80 << 3) / size;
+        cellPx = (80 << 3) / (this.size = size);
         gui = new JPanel(new BorderLayout(3, 3));
         boardPanel = new JPanel(new GridLayout(size+1, size+1));
         board = new int[size];
         cells = new JButton[size][size];
-        for (int i = 1; i <= size; i++) {
+        for (int i = 1; i <= size; i++)
             for (int j = 1; j <= size; j++) {
                 JButton cell = new JButton();
                 cell.setMargin(new Insets(0,0,0,0));
@@ -26,7 +25,6 @@ public class ChessBoard {
                 cell.setBackground((1 & i + j) == 0 ? Color.WHITE : Color.GRAY);
                 cells[i-1][j-1] = cell;
             }
-        }
     }
 
     public final JComponent getGui() throws IOException {
@@ -92,7 +90,5 @@ public class ChessBoard {
         return resBoard;
     }
 
-    void putQueen(int xAxis, int yAxis) {
-        board[xAxis] = yAxis;
-    }
+    void putQueen(int row, int col) {board[row] = col;}
 }
