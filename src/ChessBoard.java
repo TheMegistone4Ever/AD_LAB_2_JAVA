@@ -32,7 +32,21 @@ public class ChessBoard {
         List<State> solutions = new ArrayList<>();
         if (size < 4) solutions.add(board);
         else { // todo A*
-
+            PriorityQueue<State> states = new PriorityQueue<>();
+            states.add(board);
+            while (!states.isEmpty()) {
+                State current = states.poll();
+                if (current.heuristic() == 0) {solutions.add(current);break;}
+                int currentDepth = current.getDepth();
+                if (currentDepth != size)
+                    for (int row = 0; row < size; row++) {
+                        State newState = new State(current);
+                        newState.put(row, currentDepth);
+                        newState.setDepth(currentDepth + 1);
+                        newState.setParent(current);
+                        states.add(newState);
+                    }
+            }
         }
         System.out.println("A* on "  + size + "x" + size + " board has found solution in "
                 + (System.currentTimeMillis()-start) + "ms...");
@@ -43,7 +57,7 @@ public class ChessBoard {
         long start = System.currentTimeMillis();
         List<State> solutions = new ArrayList<>();
         if (size < 4) solutions.add(board);
-        else for (int queen = 0; queen >= 0; ) {
+        else for (int queen = 0; queen >= 0;) {
                 do board.forward(queen); while (board.at(queen) < size && board.attacked(queen));
                 if (board.at(queen) < size)
                     if (queen < size - 1) board.put(++queen, -1);
