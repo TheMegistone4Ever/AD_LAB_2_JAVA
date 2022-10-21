@@ -30,7 +30,6 @@ public class ChessBoard {
     }
 
     ArrayList<State> AStar() {
-        int iterations = 0, statesTotal = 1, malloc = 1;
         ArrayList<State> solutions = new ArrayList<>();
         long start = System.currentTimeMillis();
         if (size < MIN_SOLUTION_SIZE) solutions.add(board);
@@ -38,14 +37,13 @@ public class ChessBoard {
             PriorityQueue<State> states = new PriorityQueue<>();
             states.add(board);
             while (!states.isEmpty()) {
-                ++iterations;
-                State current = states.poll(); ++statesTotal; ++malloc;
+                State current = states.poll();
                 if (current.done()) {solutions.add(current); break;}
                 int currentDepth = current.getDepth();
                 if (currentDepth != size) {
                     int currentGrade = current.heuristic();
                     for (int row = INIT_POS; row < size; ++row) {
-                        State node = new State(current); ++statesTotal;
+                        State node = new State(current);
                         node.put(row, currentDepth);
                         node.setDepth(currentDepth + 1);
                         if (node.heuristic() <= currentGrade) states.add(node);
@@ -55,18 +53,16 @@ public class ChessBoard {
         }
         System.out.println("A* on "  + size + "x" + size + " board has found solution in "
                 + (System.currentTimeMillis()-start) + "ms:");
-        debug(board.toString(), iterations, statesTotal, malloc);
         return solutions;
     }
 
     ArrayList<State> BFS() {
         ArrayList<State> solutions = new ArrayList<>();
-        int iterations = 0, statesTotal = 1, malloc = 1;
         board.put(0, new Random().nextInt(size - 1));
         long start = System.currentTimeMillis();
         if (size < MIN_SOLUTION_SIZE) solutions.add(board);
         else {
-            for (int row = INIT_POS; row >= INIT_POS; ++iterations) {
+            for (int row = INIT_POS; row >= INIT_POS;) {
                 do board.forward(row); while (board.at(row) < size && board.attacked(row));
                 if (board.at(row) < size) {
                     if (row < size - 1) board.put(++row, INIT_POS - 1);
@@ -80,7 +76,6 @@ public class ChessBoard {
         }
         System.out.println("BFS on "  + size + "x" + size + " board has found solution in "
                 + (System.currentTimeMillis()-start) + "ms:");
-        debug(board.toString(), iterations, statesTotal, malloc);
         return solutions;
     }
 

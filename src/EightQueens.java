@@ -16,24 +16,19 @@ public class EightQueens {
                     System.out.print("Which algorithm do you want to solve the problem, BFS or A* (0/1)? ");
                     boolean aStar = Integer.parseInt(console.readLine()) > 0;
                     System.out.println("Process of solving problem \"8-Queens\" has started:");
-                    for (int k = 0; k < 20; ++k) {
-                        ChessBoard board = new ChessBoard(size);
-                        ArrayList<State> solutions = aStar ? board.AStar() : board.BFS();
+                    ChessBoard board = new ChessBoard(size);
+                    ArrayList<State> solutions = aStar ? board.AStar() : board.BFS();
+                    for (int i = 0; i < Math.min(solutions.size(), 15); i++) {
                         ChessBoard tmp = new ChessBoard(board.getSize());
-                        tmp.setBoard(solutions.get(0));
-
-                        /*for (int i = 0; i < Math.min(solutions.size(), 15); i++) {
-                            ChessBoard tmp = new ChessBoard(board.getSize());
-                            tmp.setBoard(solutions.get(i));
-                            JFrame f = new JFrame("ChessBoard #" + (i + 1));
-                            f.add(tmp.createGui());
-                            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                            f.setLocationByPlatform(true);
-                            f.setResizable(false);
-                            f.pack();
-                            f.setMinimumSize(f.getSize());
-                            f.setVisible(true);
-                        }*/
+                        tmp.setBoard(solutions.get(i));
+                        JFrame f = new JFrame("ChessBoard #" + (i + 1));
+                        f.add(tmp.createGui());
+                        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        f.setLocationByPlatform(true);
+                        f.setResizable(false);
+                        f.pack();
+                        f.setMinimumSize(f.getSize());
+                        f.setVisible(true);
                     }
                 }
                 console.close();
