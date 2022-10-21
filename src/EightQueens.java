@@ -19,7 +19,7 @@ public class EightQueens {
                     System.out.println("Process of solving problem \"8-Queens\" has started:");
                     List<State> solutions = aStar ? board.AStar() : board.BFS();
                     for (int i = 0; i < Math.min(solutions.size(), 15); i++) {
-                        ChessBoard tmp = new ChessBoard(board.size);
+                        ChessBoard tmp = new ChessBoard(board.getSize());
                         tmp.setBoard(solutions.get(i));
                         JFrame f = new JFrame("ChessBoard #" + (i + 1));
                         f.add(tmp.createGui());

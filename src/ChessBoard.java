@@ -2,20 +2,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
 public class ChessBoard {
-    int size, cellPx;
-    State board;
-    final JPanel boardPanel;
-    JButton[][] cells;
+    private static final int MIN_SOLUTION_SIZE = 4;
+
+    private final int size;
+    private final int cellPx;
+    private State board;
+    private final JPanel boardPanel;
+    private final JButton[][] cells;
 
     ChessBoard(int size) throws IOException {
-        this.cellPx = (80 << 3) / (this.size = size);
+        cellPx = (80 << 3) / (this.size = size);
         this.boardPanel = new JPanel(new GridLayout(size+1, size+1));
-        this.board = new State(size, 0);
+        this.board = new State(size, 0, null);
         this.cells = new JButton[size][size];
         for (int i = 1; i <= size; i++)
             for (int j = 1; j <= size; j++) {
@@ -30,13 +34,13 @@ public class ChessBoard {
     List<State> AStar() {
         long start = System.currentTimeMillis();
         List<State> solutions = new ArrayList<>();
-        if (size < 4) solutions.add(board);
-        else { // todo A*
+        if (size < MIN_SOLUTION_SIZE) solutions.add(board);
+        else {
             PriorityQueue<State> states = new PriorityQueue<>();
             states.add(board);
             while (!states.isEmpty()) {
                 State current = states.poll();
-                if (current.heuristic() == 0) {solutions.add(current);break;}
+                if (current.done()) {solutions.add(current);break;}
                 int currentDepth = current.getDepth();
                 if (currentDepth != size)
                     for (int row = 0; row < size; row++) {
@@ -56,7 +60,7 @@ public class ChessBoard {
     List<State> BFS() {
         long start = System.currentTimeMillis();
         List<State> solutions = new ArrayList<>();
-        if (size < 4) solutions.add(board);
+        if (size < MIN_SOLUTION_SIZE) solutions.add(board);
         else for (int queen = 0; queen >= 0;) {
                 do board.forward(queen); while (board.at(queen) < size && board.attacked(queen));
                 if (board.at(queen) < size)
@@ -76,11 +80,17 @@ public class ChessBoard {
         for (int row = 0; row < size; row++) {
             boardPanel.add(new JLabel(Integer.toString(row+1), SwingConstants.CENTER));
             for (int col = 0; col < size; boardPanel.add(cells[row][col++]))
-                if (board.at(row) == col) cells[row][col].setIcon(new ImageIcon("src\\queen.png"));
+                if (board.at(row) == col)
+                    cells[row][col]
+                            .setIcon(new ImageIcon(new ImageIcon("src\\queen.png")
+                            .getImage()
+                            .getScaledInstance(cellPx, cellPx,  java.awt.Image.SCALE_SMOOTH)));
         }
         gui.add(boardPanel);
         return gui;
     }
+
+    public final int getSize() {return size;}
 
     public void setBoard(State board) {
         this.board = board;

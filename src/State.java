@@ -1,33 +1,57 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class State implements Comparable<State> {
     private final int[] board;
+    private final int[][] queens; // 0 - columns 1 - main diagonals 2 - secondary diagonals
     private final int size;
     private int depth;
     private State parent;
 
-    public State(int size, int depth) {
+    public State(int size, int depth, State parent) {
         this.board = new int[size];
+        this.queens = new int[3][size << 1];
         this.depth = depth;
         this.size = size;
-        this.parent = null;
+        this.parent = parent;
+
+        List<Integer> pos = new ArrayList<>();
+        for (int i = 0; i < size; i++) pos.add(i);
         Random random = new Random();
-        for (int i = 0; i < size; i++) put(i, random.nextInt(size));
+        for (int i = 0; i < size; i++) {
+            int rand = pos.remove(random.nextInt(pos.size()));
+            put(i, rand);
+        }
     }
 
     public State(State state) {
         this.board = state.board.clone();
+        this.queens = state.queens;
         this.depth = state.depth;
         this.size = state.size;
         this.parent = state.parent;
     }
 
-    void put(int row, int col) {board[row] = col;}
+    void put(int row, int col) {
+        board[row] = col;
+    }
 
     boolean attacked(int y) {
-        for (int i = 1; i <= y; i++)
+        for (int i = 1; i <= y; ++i)
             if (board[y-i] == board[y] || board[y-i] == board[y] - i || board[y-i] == board[y] + i) return true;
         return false;
+    }
+
+    boolean done() {
+        for (int queen = 0; queen < board.length; queen++)
+            for (int enemy = 0; enemy < board.length && board[enemy] >= 0; enemy++)
+                if (enemy != queen
+                        && (board[queen] == board[enemy]
+                        || queen + board[queen] == enemy + board[enemy]
+                        || queen - board[queen] == enemy - board[enemy]))
+                    return false;
+        return true;
     }
 
     int heuristic() {
