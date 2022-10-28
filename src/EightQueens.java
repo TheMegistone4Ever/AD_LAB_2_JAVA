@@ -22,7 +22,9 @@ public class EightQueens {
                     ArrayList<State> solutions = aStar ? board.AStar() : board.BFS();
                     for (int sol = 0; sol < Math.min(solutions.size(), 15); ++sol) {
                         ChessBoard tmp = new ChessBoard(board.getSize());
-                        tmp.setBoard(solutions.get(sol));
+                        State plane = solutions.get(sol);
+                        tmp.setBoard(plane);
+                        System.out.println("Conflicts: " + plane.heuristic());
                         JFrame f = new JFrame("ChessBoard #" + (sol + 1));
                         f.add(tmp.createGui());
                         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -10,7 +10,7 @@ public class State implements Comparable<State> {
     public State(int size, int depth) {
         this.board = new int[this.size = size];
         this.depth = depth;
-        ArrayList<Integer> pos = new ArrayList<>(size - 1);
+        ArrayList<Integer> pos = new ArrayList<>(size);
         for (int i = 0; i < size; ++i) pos.add(i);
         Random random = new Random();
         for (int i = 0; i < size; ++i) put(i, pos.remove(random.nextInt(pos.size())));

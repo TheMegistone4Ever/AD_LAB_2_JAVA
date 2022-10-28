@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Queue;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class ChessBoard {
@@ -67,19 +70,37 @@ public class ChessBoard {
         if (size < MIN_SOLUTION_SIZE)
             solutions.add(solution);
         else {
-            for (int row = INIT_POS; row >= INIT_POS;) {
-                do solution.forward(row);
-                while (solution.at(row) < size && solution.attacked(row));
-                if (solution.at(row) < size) {
-                    if (row < size - 1)
-                        solution.put(++row, INIT_POS - 1);
-                    else {
-                        solutions.add(new State(solution));
-                        break;
+            Queue<State> states = new LinkedList<>();
+            states.add(board);
+            while (!states.isEmpty()) {
+                State current = states.poll();
+                if (current.done()) {
+                    solutions.add(current);
+                    break;
+                }
+                int currentDepth = current.getDepth();
+                if (currentDepth != size) {
+                    for (int row = INIT_POS; row < size; ++row) {
+                        State node = new State(current);
+                        node.put(row, currentDepth);
+                        node.setDepth(currentDepth + 1);
+                        states.add(node);
                     }
-                } else
-                    --row;
+                }
             }
+//            for (int row = INIT_POS; row >= INIT_POS;) {
+//                do solution.forward(row);
+//                while (solution.at(row) < size && solution.attacked(row));
+//                if (solution.at(row) < size) {
+//                    if (row < size - 1)
+//                        solution.put(++row, INIT_POS - 1);
+//                    else {
+//                        solutions.add(new State(solution));
+//                        break;
+//                    }
+//                } else
+//                    --row;
+//            }
         }
         System.out.println("BFS on "  + size + "x" + size + " board has found solution in "
                 + (System.currentTimeMillis()-start) + "ms:");
