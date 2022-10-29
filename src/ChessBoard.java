@@ -31,14 +31,15 @@ public class ChessBoard {
     }
 
     ArrayList<State> AStar() {
+        int total = 0, iterations = 0, malloc = 0;
         ArrayList<State> solutions = new ArrayList<>();
         long start = System.currentTimeMillis();
         if (size < MIN_SOLUTION_SIZE)
             solutions.add(board);
         else {
             PriorityQueue<State> states = new PriorityQueue<>();
-            states.add(board);
-            while (!states.isEmpty()) {
+            states.add(board); ++malloc; ++total;
+            while (!states.isEmpty()) { ++iterations;
                 State current = states.poll();
                 if (current.done()) {
                     solutions.add(current);
@@ -48,30 +49,35 @@ public class ChessBoard {
                 if (currentDepth != size) {
                     int currentGrade = current.heuristic();
                     for (int row = INIT_POS; row < size; ++row) {
-                        State node = new State(current);
+                        State node = new State(current); ++malloc;
                         node.put(row, currentDepth);
                         node.setDepth(currentDepth + 1);
-                        if (node.heuristic() <= currentGrade)
-                            states.add(node);
+                        if (node.heuristic() <= currentGrade) {
+                            states.add(node); ++total;
+                        }
                     }
                 }
             }
         }
         System.out.println("A* on "  + size + "x" + size + " board has found solution in "
                 + (System.currentTimeMillis()-start) + "ms:");
+        System.out.println("TOTAL: " + total);
+        System.out.println("MALLOC: " + malloc);
+        System.out.println("ITERATIONS: " + iterations);
+        System.out.println();
         return solutions;
     }
 
     ArrayList<State> BFS() {
+        int total = 0, iterations = 0, malloc = 0;
         ArrayList<State> solutions = new ArrayList<>();
-        State solution = new State(board);
         long start = System.currentTimeMillis();
         if (size < MIN_SOLUTION_SIZE)
-            solutions.add(solution);
+            solutions.add(board);
         else {
             Queue<State> states = new LinkedList<>();
-            states.add(board);
-            while (!states.isEmpty()) {
+            states.add(board); ++malloc; ++total;
+            while (!states.isEmpty()) { ++iterations;
                 State current = states.poll();
                 if (current.done()) {
                     solutions.add(current);
@@ -80,7 +86,7 @@ public class ChessBoard {
                 int currentDepth = current.getDepth();
                 if (currentDepth != size) {
                     for (int row = INIT_POS; row < size; ++row) {
-                        State node = new State(current);
+                        State node = new State(current);  ++malloc; ++total;
                         node.put(row, currentDepth);
                         node.setDepth(currentDepth + 1);
                         states.add(node);
@@ -90,6 +96,10 @@ public class ChessBoard {
         }
         System.out.println("BFS on "  + size + "x" + size + " board has found solution in "
                 + (System.currentTimeMillis()-start) + "ms:");
+        System.out.println("TOTAL: " + total);
+        System.out.println("MALLOC: " + malloc);
+        System.out.println("ITERATIONS: " + iterations);
+        System.out.println();
         return solutions;
     }
 
