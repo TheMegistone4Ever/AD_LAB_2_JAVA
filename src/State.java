@@ -60,10 +60,6 @@ public class State implements Comparable<State> {
         return board[row];
     }
 
-    public void forward(int row) {
-        ++board[row];
-    }
-
     public void setDepth(int depth) {
         this.depth = depth;
     }

@@ -87,19 +87,6 @@ public class ChessBoard {
                     }
                 }
             }
-//            for (int row = INIT_POS; row >= INIT_POS;) {
-//                do solution.forward(row);
-//                while (solution.at(row) < size && solution.attacked(row));
-//                if (solution.at(row) < size) {
-//                    if (row < size - 1)
-//                        solution.put(++row, INIT_POS - 1);
-//                    else {
-//                        solutions.add(new State(solution));
-//                        break;
-//                    }
-//                } else
-//                    --row;
-//            }
         }
         System.out.println("BFS on "  + size + "x" + size + " board has found solution in "
                 + (System.currentTimeMillis()-start) + "ms:");
