@@ -40,21 +40,18 @@ public class ChessBoard {
             PriorityQueue<State> states = new PriorityQueue<>();
             states.add(board); ++malloc; ++total;
             while (!states.isEmpty()) { ++iterations;
-                State current = states.poll();
+                State current = states.poll(); --malloc;
                 if (current.done()) {
                     solutions.add(current);
                     break;
                 }
                 int currentDepth = current.getDepth();
                 if (currentDepth != size) {
-                    int currentGrade = current.heuristic();
-                    for (int row = INIT_POS; row < size; ++row) {
+                    for (int row = INIT_POS; row < size; ++row, ++total) {
                         State node = new State(current); ++malloc;
                         node.put(row, currentDepth);
                         node.setDepth(currentDepth + 1);
-                        if (node.heuristic() <= currentGrade) {
-                            states.add(node); ++total;
-                        }
+                        states.add(node);
                     }
                 }
             }

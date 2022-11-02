@@ -24,7 +24,7 @@ public class EightQueens {
                         ChessBoard tmp = new ChessBoard(board.getSize());
                         State plane = solutions.get(sol);
                         tmp.setBoard(plane);
-                        System.out.println("Conflicts: " + plane.heuristic());
+                        System.out.println("Conflicts: " + (plane.heuristic() - plane.getDepth()));
                         JFrame f = new JFrame("ChessBoard #" + (sol + 1));
                         f.add(tmp.createGui());
                         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
